@@ -202,7 +202,7 @@ export default function JoystickControlle({ sendMessage }: Props) {
 	return (
 		<Stack direction="column" justifyContent="center" alignItems="center" spacing={20}>
 			{/* Render the question and answers only when isConnected is true */}
-			{isConnected || (
+			{isConnected && (
 				<>
 					<Box>{question}</Box>
 					{answers.map((answer) => (
