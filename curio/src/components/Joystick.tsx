@@ -4,6 +4,7 @@ import { Box, Button, Container, Stack } from "@mui/material";
 import { Curio } from "../services/curioServices";
 import { DataType, PeerData } from "../services/types";
 import * as fs from 'fs';
+
 type Props = {
 	sendMessage: ((message: PeerData) => void) | undefined;
 };
@@ -21,12 +22,16 @@ export default function JoystickControlle({ sendMessage }: Props) {
 	const [answerCorrect, setAnswerCorrect] = useState<boolean | null>(null);
 	const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
 
+	// Quiz progress state
+	const [questionCount, setQuestionCount] = useState(0);
+	const [quizComplete, setQuizComplete] = useState(false);
+
 	const curio = new Curio();
 	
 	useEffect(() => {
 		if (buttonsDisabled) {
-			// Re-enable the buttons after 5 seconds
-			const timeout = setTimeout(() => setButtonsDisabled(false), 5000);
+			// Re-enable the buttons after 3 seconds
+			const timeout = setTimeout(() => setButtonsDisabled(false), 3000);
 			
 			// Clear the timeout if the component unmounts
 			return () => clearTimeout(timeout);
@@ -58,25 +63,23 @@ export default function JoystickControlle({ sendMessage }: Props) {
 	};
 
 
-	/// Handle answer selection
+	// Handle answer selection
 	const handleAnswerSelect = async (answer: string) => {
 		setSelectedAnswer(answer);
 		if (answer === correctAnswer) {
-			curio.setParameters(0, 1, 100);
+			curio.setParameters(0, 1, 100); // move forward
 			curio.move();
 			setAnswerCorrect(true);
-			await initQuestion(); // load the next question
+			setQuestionCount((prevCount)=> prevCount+1); // increment question count
+			await initQuestion();
 		} else {
-			// Show a notification or message to indicate the wrong answer
-			// Robot will not move if the wrong answer is selected
+			curio.setParameters(0, -1, 100) // move backward
+			curio.move();
 			setAnswerCorrect(false);
 			setButtonsDisabled(true); // Disable buttons when the answer is wrong
 		}
 	};
 	
-	
-
-
 	const handleConnect = () => {
 		if (sendMessage) {
 			const connectData: PeerData = {
@@ -199,17 +202,26 @@ export default function JoystickControlle({ sendMessage }: Props) {
 		};
 	}, [isMoving]);
 
+	// 10 answers correct = quiz complete
+	useEffect(() => {
+		if (questionCount === 10) {
+			setQuizComplete(true);
+		}
+	}, [questionCount]);
+
 	return (
-		<Stack direction="column" justifyContent="center" alignItems="center" spacing={20}>
+		<Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
+			{!isConnected && <Box>Robot Not Connected</Box>}
+
 			{/* Render the question and answers only when isConnected is true */}
-			{isConnected && (
+			{isConnected && !quizComplete && (
 				<>
-					<Box>{question}</Box>
+					<Box>{questionCount + 1}. {question}</Box>
 					{answers.map((answer) => (
 						<Button
 							key={answer}
 							onClick={() => handleAnswerSelect(answer)}
-							disabled={isMoving || buttonsDisabled} // disable button while the robot is moving or the buttons are disabled
+							disabled={isMoving || buttonsDisabled} // disable button while the robot is moving or while the buttons are disabled
 							variant="contained"
 							style={{
 								backgroundColor: selectedAnswer === answer ? (answerCorrect ? 'green' : 'red') : undefined,
@@ -224,7 +236,7 @@ export default function JoystickControlle({ sendMessage }: Props) {
 					)}
 				</>
 			)}
-
+				{quizComplete && <Box>Quiz complete!</Box>}
 		</Stack>
 	);
 }
