@@ -63,7 +63,7 @@ def login():
         if username in users and users[username] == password:
             # Store the username in the session to indicate the user is logged in.
             session['username'] = username
-            return redirect(url_for('index'))  # Redirect to the index page on successful login.
+            return redirect(url_for('quiz_selection'))  # Redirect to the quiz_selection page on successful login.
         else:
             return "Invalid username or password. Please try again."
 
@@ -75,6 +75,10 @@ def logout():
     # Remove the 'username' key from the session to log the user out.
     session.pop('username', None)
     return redirect(url_for('index'))
+
+@app.route('/quizSelection')
+def quiz_selection():
+    return render_template('quiz_selection.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
