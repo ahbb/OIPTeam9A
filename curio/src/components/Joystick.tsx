@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Joystick } from "react-joystick-component";
-import { Box, Button, Container, Stack } from "@mui/material";
+import { Box, Button, Container, Stack, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { Curio } from "../services/curioServices";
 import { DataType, PeerData } from "../services/types";
 import * as fs from 'fs';
@@ -26,7 +26,31 @@ export default function JoystickControlle({ sendMessage }: Props) {
 	const [questionCount, setQuestionCount] = useState(0);
 	const [quizComplete, setQuizComplete] = useState(false);
 
+	const moveOptions = ['Move Forward', 'Turn Left', 'Turn Right'];
+	const [showPopup, setShowPopup] = useState(false);
+	const [selectedMoveOption, setSelectedMoveOption] = useState('');
+
 	const curio = new Curio();
+
+	const moveForward = () => {
+		curio.setParameters(0, 1, 100);
+		curio.move();
+	}
+
+	const turnLeft = () => {
+		curio.setParameters(-1,0,100);
+		curio.move();
+	}
+
+	const turnRight = () => {
+		curio.setParameters(1,0,100);
+		curio.move();
+	}
+
+	const moveBackwards = () => {
+		curio.setParameters(0,-1,100);
+		curio.move();
+	}
 	
 	useEffect(() => {
 		if (buttonsDisabled) {
@@ -62,19 +86,12 @@ export default function JoystickControlle({ sendMessage }: Props) {
 		}
 	};
 
-
-	// Handle answer selection
 	const handleAnswerSelect = async (answer: string) => {
 		setSelectedAnswer(answer);
 		if (answer === correctAnswer) {
-			curio.setParameters(0, 1, 100); // move forward
-			curio.move();
-			setAnswerCorrect(true);
-			setQuestionCount((prevCount)=> prevCount+1); // increment question count
-			await initQuestion();
+			setShowPopup(true);
 		} else {
-			curio.setParameters(0, -1, 100) // move backward
-			curio.move();
+			moveBackwards();
 			setAnswerCorrect(false);
 			setButtonsDisabled(true); // Disable buttons when the answer is wrong
 		}
@@ -209,6 +226,30 @@ export default function JoystickControlle({ sendMessage }: Props) {
 		}
 	}, [questionCount]);
 
+	useEffect(() => {
+		if (selectedMoveOption === 'Move Forward') {
+			moveForward();
+			setAnswerCorrect(true);
+			setQuestionCount((prevCount) => prevCount + 1); // increment question count
+			initQuestion();
+		} else if (selectedMoveOption === 'Turn Left') {
+			turnLeft();
+			setAnswerCorrect(true);
+			setQuestionCount((prevCount) => prevCount + 1); // increment question count
+			initQuestion();
+		} else if (selectedMoveOption === 'Turn Right') {
+			turnRight();
+			setAnswerCorrect(true);
+			setQuestionCount((prevCount) => prevCount + 1); // increment question count
+			initQuestion();
+		}
+	
+		// Reset the selected option and hide the pop-up
+		setSelectedMoveOption('');
+		setShowPopup(false);
+	}, [selectedMoveOption]);
+
+
 	return (
 		<Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
 			{!isConnected && <Box>Robot Not Connected</Box>}
@@ -231,6 +272,34 @@ export default function JoystickControlle({ sendMessage }: Props) {
 						</Button>
 						
 					))}
+
+					<Dialog
+					open={showPopup}
+					BackdropProps={{
+						// This will prevent the user from closing the dialog by clicking outside
+						onClick: (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+						event.stopPropagation();
+						},
+					}}
+					PaperProps={{
+						// This will prevent the user from closing the dialog by pressing escape key
+						onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
+						if (event.key === 'Escape') {
+							event.stopPropagation();
+						}
+						},
+					}}
+					>
+						<DialogTitle>Choose an Option</DialogTitle>
+						<DialogContent>
+						{moveOptions.map((option) => (
+							<Button key={option} onClick={() => setSelectedMoveOption(option)}>
+								{option}
+							</Button>
+						))}
+						</DialogContent>
+					</Dialog>
+
 					{answerCorrect !== null && (
 						<Box>{answerCorrect ? 'Your last answer was correct.' : 'Your last answer was incorrect.'}</Box>
 					)}
