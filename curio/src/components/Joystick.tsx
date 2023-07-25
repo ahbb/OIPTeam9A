@@ -4,6 +4,7 @@ import { Box, Button, Container, Stack, Dialog, DialogTitle, DialogContent, Dial
 import { Curio } from "../services/curioServices";
 import { DataType, PeerData } from "../services/types";
 import * as fs from 'fs';
+import { TextField } from "@mui/material";
 
 type Props = {
 	sendMessage: ((message: PeerData) => void) | undefined;
@@ -13,6 +14,10 @@ export default function JoystickControlle({ sendMessage }: Props) {
 	const [isConnected, setIsConnected] = useState<boolean>(false);
 	const [isMoving, setIsMoving] = useState<boolean>(false);
 	const [isMovingForward, setIsMovingForward] = useState<boolean>(false);
+	const [numCheckpoints, setNumCheckpoints] = useState<number | null>(null);
+	const [checkpointsComplete, setCheckpointsComplete] = useState(0);
+	const [quizStarted, setQuizStarted] = useState(false);
+
 
 	// Multiple-choice question state
 	const [question, setQuestion] = useState<string | null>(null);
@@ -29,6 +34,13 @@ export default function JoystickControlle({ sendMessage }: Props) {
 	const moveOptions = ['Move Forward', 'Turn Left', 'Turn Right', 'Move Backwards'];
 	const [showPopup, setShowPopup] = useState(false);
 	const [selectedMoveOption, setSelectedMoveOption] = useState('');
+
+	const [checkpointTime, setCheckpointTime] = useState<number | null>(null);
+	const [checkpointCount, setCheckpointCount] = useState(0);
+	const [questionCountPerCheckpoint, setQuestionCountPerCheckpoint] = useState(0);
+	const [showContinue, setShowContinue] = useState(false);
+	const [timer, setTimer] = useState<number | null>(null);
+
 
 	const curio = new Curio();
 
@@ -61,8 +73,36 @@ export default function JoystickControlle({ sendMessage }: Props) {
 			return () => clearTimeout(timeout);
 		}
 	}, [buttonsDisabled]);
+	// When a correct answer is selected, increment the checkpoint count
+	useEffect(() => {
+		if (answerCorrect === true) {
+		  setCheckpointsComplete((prevCount) => prevCount + 1);
+		}
+	  }, [answerCorrect]);
 	
-	// Initialize the multiple-choice question
+	  // The quiz is complete when the number of completed checkpoints is equal to the number of desired checkpoints
+	  useEffect(() => {
+		if (numCheckpoints !== null && checkpointsComplete === numCheckpoints) {
+		  setQuizComplete(true);
+		}
+	  }, [checkpointsComplete, numCheckpoints]);
+	// Function to start the quiz
+	const startQuiz = () => {
+		setQuizStarted(true);
+		setTimer(checkpointTime);
+		// reset counts
+		setQuestionCount(0);
+		setCheckpointCount(0);
+		initQuestion();
+	  };
+
+	// Continue to the next checkpoint
+	const continueToNextCheckpoint = () => {
+		setQuestionCountPerCheckpoint(0);
+		setShowContinue(false);
+		setTimer(checkpointTime);
+	  };
+	    
 	const initQuestion = async () => {
 		try {
 			const response = await fetch('./questions.txt');
@@ -94,6 +134,7 @@ export default function JoystickControlle({ sendMessage }: Props) {
 			setAnswerCorrect(false);
 			setButtonsDisabled(true); // Disable buttons when the answer is wrong
 		}
+		setQuestionCountPerCheckpoint((prevCount) => prevCount + 1);
 	};
 	
 	const handleConnect = () => {
@@ -161,7 +202,26 @@ export default function JoystickControlle({ sendMessage }: Props) {
 		}
 		setIsMoving(false);
 	};
-
+	// Check if it's time to show the 'continue' button
+	useEffect(() => {
+		if (
+		  questionCountPerCheckpoint >= questionCount &&
+		  checkpointCount < (numCheckpoints ?? 0)
+		) {
+		  setShowContinue(true);
+		}
+	  }, [questionCountPerCheckpoint, questionCount, numCheckpoints, checkpointCount]);
+	
+	  // Timer logic
+	  useEffect(() => {
+		if (timer && timer > 0) {
+		  const timeout = setTimeout(() => setTimer((prev) => (prev ? prev - 1 : null)), 1000);
+		  return () => clearTimeout(timeout);
+		} else if (timer === 0) {
+		  setCheckpointCount((prevCount) => prevCount + 1);
+		  setShowContinue(true);
+		}
+	  }, [timer]);
 	useEffect(() => {
 		initQuestion();
 		const autoConnect = async () => {
@@ -256,60 +316,89 @@ export default function JoystickControlle({ sendMessage }: Props) {
 
 	return (
 		<Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
-			{!isConnected && <Box>Robot Not Connected</Box>}
-
-			{/* Render the question and answers only when isConnected is true */}
-			{isConnected && !quizComplete && (
-				<>
-					<Box>{questionCount + 1}. {question}</Box>
-					{answers.map((answer) => (
-						<Button
-							key={answer}
-							onClick={() => handleAnswerSelect(answer)}
-							disabled={isMoving || buttonsDisabled} // disable button while the robot is moving or while the buttons are disabled
-							variant="contained"
-							style={{
-								backgroundColor: selectedAnswer === answer ? (answerCorrect ? 'green' : 'red') : undefined,
-							}}
-						>
-							{answer}
-						</Button>
-						
-					))}
-
-					<Dialog
-					open={showPopup}
-					BackdropProps={{
-						// This will prevent the user from closing the dialog by clicking outside
-						onClick: (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-						event.stopPropagation();
-						},
-					}}
-					PaperProps={{
-						// This will prevent the user from closing the dialog by pressing escape key
-						onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
-						if (event.key === 'Escape') {
-							event.stopPropagation();
-						}
-						},
-					}}
-					>
-						<DialogTitle>Choose an Option</DialogTitle>
-						<DialogContent>
-						{moveOptions.map((option) => (
-							<Button key={option} onClick={() => setSelectedMoveOption(option)}>
-								{option}
-							</Button>
-						))}
-						</DialogContent>
-					</Dialog>
-
-					{answerCorrect !== null && (
-						<Box>{answerCorrect ? 'Your last answer was correct.' : 'Your last answer was incorrect.'}</Box>
-					)}
-				</>
-			)}
-				{quizComplete && <Box>Quiz complete!</Box>}
+		  {!quizStarted ? (
+			<Box>
+			  <TextField
+				type="number"
+				label="Number of Checkpoints"
+				variant="outlined"
+				value={numCheckpoints ?? ""}
+				onChange={(event) =>
+				  setNumCheckpoints(Math.max(Number(event.target.value), 0))
+				}
+			  />
+			  <TextField
+				type="number"
+				label="Time Between Checkpoints"
+				variant="outlined"
+				value={checkpointTime ?? ""}
+				onChange={(event) =>
+				setCheckpointTime(Math.max(Number(event.target.value), 0))
+				}
+			/>
+			  <Button onClick={startQuiz} variant="contained" color="primary">
+				Start
+			  </Button>
+			</Box>
+		  ) : isConnected || !quizComplete ? (
+			<>
+			  <Box>
+				{questionCount + 1}. {question}
+			  </Box>
+			  {answers.map((answer) => (
+				<Button
+				  key={answer}
+				  onClick={() => handleAnswerSelect(answer)}
+				  disabled={isMoving || buttonsDisabled}
+				  variant="contained"
+				  style={{
+					backgroundColor:
+					  selectedAnswer === answer
+						? answerCorrect
+						  ? "green"
+						  : "red"
+						: undefined,
+				  }}
+				>
+				  {answer}
+				</Button>
+			  ))}
+			  <Dialog
+				open={showPopup}
+				BackdropProps={{
+				  onClick: (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+					event.stopPropagation();
+				  },
+				}}
+				PaperProps={{
+				  onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
+					if (event.key === "Escape") {
+					  event.stopPropagation();
+					}
+				  },
+				}}
+			  >
+				<DialogTitle>Choose an Option</DialogTitle>
+				<DialogContent>
+				  {moveOptions.map((option) => (
+					<Button key={option} onClick={() => setSelectedMoveOption(option)}>
+					  {option}
+					</Button>
+				  ))}
+				</DialogContent>
+			  </Dialog>
+			  {answerCorrect !== null && (
+				<Box>
+				  {answerCorrect
+					? "Your last answer was correct."
+					: "Your last answer was incorrect."}
+				</Box>
+			  )}
+			</>
+		  ) : (
+			<Box>Quiz complete!</Box>
+		  )}
 		</Stack>
-	);
+	  );
+	  
 }
