@@ -5,6 +5,7 @@ import { PeerData } from "./services/types";
 import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 import JoystickController from "./components/Joystick";
 import Peer, { DataConnection } from "peerjs";
+import LoginPage from './components/LoginPage';
 
 function Home() {
 	return (
@@ -68,14 +69,27 @@ function HomePeer() {
 }
 
 function App() {
+	// State to track the login status
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+	// Function to handle successful login
+	const handleLogin = () => {
+	  setIsLoggedIn(true);
+	};
+  
 	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/:roomID" element={<HomePeer />} />
-			</Routes>
-		</BrowserRouter>
+	  <BrowserRouter>
+		{/* Conditionally render the LoginPage or the Home component */}
+		{isLoggedIn ? (
+		  <Routes>
+			<Route path="/" element={<Home />} />
+			<Route path="/:roomID" element={<HomePeer />} />
+		  </Routes>
+		) : (
+		  <LoginPage onLogin={handleLogin} />
+		)}
+	  </BrowserRouter>
 	);
-}
-
-export default App;
+  }
+  
+  export default App;
