@@ -26,7 +26,7 @@ export default function JoystickControlle({ sendMessage }: Props) {
 	const [questionCount, setQuestionCount] = useState(0);
 	const [quizComplete, setQuizComplete] = useState(false);
 
-	const moveOptions = ['Move Forward', 'Turn Left', 'Turn Right'];
+	const moveOptions = ['Move Forward', 'Turn Left', 'Turn Right', 'Move Backwards'];
 	const [showPopup, setShowPopup] = useState(false);
 	const [selectedMoveOption, setSelectedMoveOption] = useState('');
 
@@ -91,7 +91,6 @@ export default function JoystickControlle({ sendMessage }: Props) {
 		if (answer === correctAnswer) {
 			setShowPopup(true);
 		} else {
-			moveBackwards();
 			setAnswerCorrect(false);
 			setButtonsDisabled(true); // Disable buttons when the answer is wrong
 		}
@@ -239,6 +238,11 @@ export default function JoystickControlle({ sendMessage }: Props) {
 			initQuestion();
 		} else if (selectedMoveOption === 'Turn Right') {
 			turnRight();
+			setAnswerCorrect(true);
+			setQuestionCount((prevCount) => prevCount + 1); // increment question count
+			initQuestion();
+		} else if (selectedMoveOption === 'Move Backwards') {
+			moveBackwards();
 			setAnswerCorrect(true);
 			setQuestionCount((prevCount) => prevCount + 1); // increment question count
 			initQuestion();
