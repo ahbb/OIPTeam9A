@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Joystick } from "react-joystick-component";
 import { Box, Button, Container, Stack, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { Curio } from "../services/curioServices";
 import { DataType, PeerData } from "../services/types";
@@ -9,7 +8,7 @@ type Props = {
 	sendMessage: ((message: PeerData) => void) | undefined;
 };
 
-export default function JoystickControlle({ sendMessage }: Props) {
+export default function QuizController({ sendMessage }: Props) {
 	const [isConnected, setIsConnected] = useState<boolean>(false);
 	const [isMoving, setIsMoving] = useState<boolean>(false);
 	const [isMovingForward, setIsMovingForward] = useState<boolean>(false);

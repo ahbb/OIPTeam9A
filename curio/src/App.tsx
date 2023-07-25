@@ -3,14 +3,14 @@ import { useState } from "react";
 import { Button, Stack } from "@mui/material";
 import { PeerData } from "./services/types";
 import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
-import JoystickController from "./components/Joystick";
+import QuizController from "./components/Quiz";
 import Peer, { DataConnection } from "peerjs";
 import LoginPage from './components/LoginPage';
 
 function Home() {
 	return (
 		<div className="App">
-			<JoystickController sendMessage={undefined} />
+			<QuizController sendMessage={undefined} />
 		</div>
 	);
 }
@@ -43,7 +43,7 @@ function HomePeer() {
 	return (
 		<div className="App">
 			{isPeerConnected ? (
-				<JoystickController sendMessage={sendMessage} />
+				<QuizController sendMessage={sendMessage} />
 			) : (
 				<Stack
 					direction="column"
