@@ -21,6 +21,8 @@ export default function QuizController({ sendMessage }: Props) {
 	// Multiple-choice question state
 	const [question, setQuestion] = useState<string | null>(null);
 	const [answers, setAnswers] = useState<string[]>([]);
+	// Add this state variable
+	const [pointsToWin, setPointsToWin] = useState<number>(10); // Set the default value to 10 or any other value you prefer.
 	const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 	const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
 	const [answerCorrect, setAnswerCorrect] = useState<boolean | null>(null);
@@ -30,17 +32,9 @@ export default function QuizController({ sendMessage }: Props) {
 	const [questionCount, setQuestionCount] = useState(0);
 	const [quizComplete, setQuizComplete] = useState(false);
 
-	const moveOptions = ['Move Forward', 'Turn Left', 'Turn Right', 'Move Backwards'];
+	const moveOptions = ['Move Forward', 'Turn Left', 'Turn Right'];
 	const [showPopup, setShowPopup] = useState(false);
 	const [selectedMoveOption, setSelectedMoveOption] = useState('');
-
-	const [checkpointTime, setCheckpointTime] = useState<number | null>(null);
-	const [checkpointCount, setCheckpointCount] = useState(0);
-	const [questionCountPerCheckpoint, setQuestionCountPerCheckpoint] = useState(0);
-	const [showContinue, setShowContinue] = useState(false);
-	const [timer, setTimer] = useState<number | null>(null);
-
-
 	const curio = new Curio();
 
 	const moveForward = () => {
@@ -72,36 +66,25 @@ export default function QuizController({ sendMessage }: Props) {
 			return () => clearTimeout(timeout);
 		}
 	}, [buttonsDisabled]);
-	// When a correct answer is selected, increment the checkpoint count
-	useEffect(() => {
-		if (answerCorrect === true) {
-		  setCheckpointsComplete((prevCount) => prevCount + 1);
-		}
-	  }, [answerCorrect]);
 	
 	  // The quiz is complete when the number of completed checkpoints is equal to the number of desired checkpoints
-	  useEffect(() => {
-		if (numCheckpoints !== null && checkpointsComplete === numCheckpoints) {
-		  setQuizComplete(true);
+	  // Replace the existing useEffect block
+	// The quiz is complete when the number of completed checkpoints is greater than or equal to the number of desired checkpoints
+	useEffect(() => {
+		if (numCheckpoints !== null && checkpointsComplete >= pointsToWin) {
+		setQuizComplete(true);
 		}
-	  }, [checkpointsComplete, numCheckpoints]);
+	}, [checkpointsComplete, numCheckpoints, pointsToWin]);
+	
 	// Function to start the quiz
 	const startQuiz = () => {
 		setQuizStarted(true);
-		setTimer(checkpointTime);
 		// reset counts
 		setQuestionCount(0);
-		setCheckpointCount(0);
 		initQuestion();
 	  };
 
-	// Continue to the next checkpoint
-	const continueToNextCheckpoint = () => {
-		setQuestionCountPerCheckpoint(0);
-		setShowContinue(false);
-		setTimer(checkpointTime);
-	  };
-	    
+
 	const initQuestion = async () => {
 		try {
 			const response = await fetch('./questions.txt');
@@ -132,8 +115,8 @@ export default function QuizController({ sendMessage }: Props) {
 		} else {
 			setAnswerCorrect(false);
 			setButtonsDisabled(true); // Disable buttons when the answer is wrong
+			moveBackwards();
 		}
-		setQuestionCountPerCheckpoint((prevCount) => prevCount + 1);
 	};
 	
 	const handleConnect = () => {
@@ -201,26 +184,7 @@ export default function QuizController({ sendMessage }: Props) {
 		}
 		setIsMoving(false);
 	};
-	// Check if it's time to show the 'continue' button
-	useEffect(() => {
-		if (
-		  questionCountPerCheckpoint >= questionCount &&
-		  checkpointCount < (numCheckpoints ?? 0)
-		) {
-		  setShowContinue(true);
-		}
-	  }, [questionCountPerCheckpoint, questionCount, numCheckpoints, checkpointCount]);
-	
-	  // Timer logic
-	  useEffect(() => {
-		if (timer && timer > 0) {
-		  const timeout = setTimeout(() => setTimer((prev) => (prev ? prev - 1 : null)), 1000);
-		  return () => clearTimeout(timeout);
-		} else if (timer === 0) {
-		  setCheckpointCount((prevCount) => prevCount + 1);
-		  setShowContinue(true);
-		}
-	  }, [timer]);
+	  
 	useEffect(() => {
 		initQuestion();
 		const autoConnect = async () => {
@@ -277,13 +241,6 @@ export default function QuizController({ sendMessage }: Props) {
 		};
 	}, [isMoving]);
 
-	// 10 answers correct = quiz complete
-	useEffect(() => {
-		if (questionCount === 10) {
-			setQuizComplete(true);
-		}
-	}, [questionCount]);
-
 	useEffect(() => {
 		if (selectedMoveOption === 'Move Forward') {
 			moveForward();
@@ -300,12 +257,7 @@ export default function QuizController({ sendMessage }: Props) {
 			setAnswerCorrect(true);
 			setQuestionCount((prevCount) => prevCount + 1); // increment question count
 			initQuestion();
-		} else if (selectedMoveOption === 'Move Backwards') {
-			moveBackwards();
-			setAnswerCorrect(true);
-			setQuestionCount((prevCount) => prevCount + 1); // increment question count
-			initQuestion();
-		}
+		} 
 	
 		// Reset the selected option and hide the pop-up
 		setSelectedMoveOption('');
@@ -317,29 +269,12 @@ export default function QuizController({ sendMessage }: Props) {
 		<Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
 		  {!quizStarted ? (
 			<Box>
-			  <TextField
-				type="number"
-				label="Number of Checkpoints"
-				variant="outlined"
-				value={numCheckpoints ?? ""}
-				onChange={(event) =>
-				  setNumCheckpoints(Math.max(Number(event.target.value), 0))
-				}
-			  />
-			  <TextField
-				type="number"
-				label="Time Between Checkpoints"
-				variant="outlined"
-				value={checkpointTime ?? ""}
-				onChange={(event) =>
-				setCheckpointTime(Math.max(Number(event.target.value), 0))
-				}
-			/>
+
 			  <Button onClick={startQuiz} variant="contained" color="primary">
 				Start
 			  </Button>
 			</Box>
-		  ) : isConnected || !quizComplete ? (
+		  ) : isConnected && !quizComplete ? (
 			<>
 			  <Box>
 				{questionCount + 1}. {question}
