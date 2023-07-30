@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Container, Stack, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem } from "@mui/material";
+import { Box, Button, Container, Stack, Dialog, DialogTitle, DialogContent, Checkbox, FormControlLabel } from "@mui/material";
 import { Curio } from "../services/curioServices";
 import { DataType, PeerData } from "../services/types";
 import * as fs from 'fs';
@@ -28,7 +28,13 @@ export default function QuizController({ sendMessage }: Props) {
 	const [answerCorrect, setAnswerCorrect] = useState<boolean | null>(null);
 	const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
 	const [selectedFilename, setSelectedFilename] = useState<string>('');
+	const [selectedCheckboxes, setSelectedCheckboxes] = useState<string[]>([]);
 
+	const checkboxOptions = [
+		{ label: "Week 1", value: "week1.txt" },
+		{ label: "Week 2", value: "week2.txt" },
+		{ label: "Week 3", value: "week3.txt" },
+	  ];
 
 	// Quiz progress state
 	const [questionCount, setQuestionCount] = useState(0);
@@ -83,32 +89,37 @@ export default function QuizController({ sendMessage }: Props) {
 		setQuizStarted(true);
 		// reset counts
 		setQuestionCount(0);
-		initQuestion(selectedFilename);
+		initQuestion();
 	  };
 
 
-	const initQuestion = async (filename : String) => {
+	  const initQuestion = async () => {
 		try {
+		  // Combine selected text files
+		  let combinedText = '';
+		  for (const filename of selectedCheckboxes) {
 			const response = await fetch(`./${filename}`);
 			const text = await response.text();
-			console.log("gretg - " + text)
-			const lines = text.split('\n');
-			const randomLine = lines[Math.floor(Math.random() * lines.length)];
-			const data = randomLine.split('|');
-
-			const question = data[0];
-			const correctAnswer = data[1];	
-			const wrongAnswers = data.slice(2);
-			const answers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
-
-			setQuestion(question);
-			setCorrectAnswer(correctAnswer);
-			setAnswers(answers);
-						
+			combinedText += text + '\n';
+		  }
+	  
+		  const lines = combinedText.split('\n');
+		  const randomLine = lines[Math.floor(Math.random() * lines.length)];
+		  const data = randomLine.split('|');
+	  
+		  const question = data[0];
+		  const correctAnswer = data[1];
+		  const wrongAnswers = data.slice(2);
+		  const answers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+	  
+		  setQuestion(question);
+		  setCorrectAnswer(correctAnswer);
+		  setAnswers(answers);
 		} catch (err) {
-			console.error('Failed to fetch questions', err);
+		  console.error('Failed to fetch questions', err);
 		}
-	};
+	  };
+	  
 
 	const handleAnswerSelect = async (answer: string) => {
 		setSelectedAnswer(answer);
@@ -188,7 +199,7 @@ export default function QuizController({ sendMessage }: Props) {
 	};
 	  
 	useEffect(() => {
-		initQuestion(selectedFilename);
+		initQuestion();
 		const autoConnect = async () => {
 			try {
 				if (!isConnected) {
@@ -248,17 +259,17 @@ export default function QuizController({ sendMessage }: Props) {
 			moveForward();
 			setAnswerCorrect(true);
 			setQuestionCount((prevCount) => prevCount + 1); // increment question count
-			initQuestion(selectedFilename);
+			initQuestion();
 		} else if (selectedMoveOption === 'Turn Left') {
 			turnLeft();
 			setAnswerCorrect(true);
 			setQuestionCount((prevCount) => prevCount + 1); // increment question count
-			initQuestion(selectedFilename);
+			initQuestion();
 		} else if (selectedMoveOption === 'Turn Right') {
 			turnRight();
 			setAnswerCorrect(true);
 			setQuestionCount((prevCount) => prevCount + 1); // increment question count
-			initQuestion(selectedFilename);
+			initQuestion();
 		} 
 	
 		// Reset the selected option and hide the pop-up
@@ -268,30 +279,50 @@ export default function QuizController({ sendMessage }: Props) {
 
 	const handleFileSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		// Call initQuestion with the selected filename
-		initQuestion(selectedFilename);
-	};	  
+		if (selectedCheckboxes.length > 0) {
+		  // Start the quiz with the concatenated text files
+		  setQuizStarted(true);
+		  // Reset counts
+		  setQuestionCount(0);
+		  initQuestion();
+		} else {
+		  // Display an error message or take appropriate action if no checkboxes are selected
+		}
+	  };
+		
+
+	const handleCheckboxChange = (value: string) => {
+		setSelectedCheckboxes((prevSelected) => {
+		  if (prevSelected.includes(value)) {
+			return prevSelected.filter((item) => item !== value);
+		  } else {
+			return [...prevSelected, value];
+		  }
+		});
+	  };	  
 
 	return (
 		<Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
 		  {!quizStarted ? (
-			<form onSubmit={handleFileSubmit}>
-			<Select
-				label="Enter Filename" // Note: Select doesn't use "label" prop directly, you may need to adjust styling accordingly.
-				value={selectedFilename}
-				onChange={(e) => setSelectedFilename(e.target.value)}
-				style={{ width: "50%" }}
-				>
-				<MenuItem value="week1.txt">Week 1</MenuItem>
-				<MenuItem value="week2.txt">Week 2</MenuItem>
-				<MenuItem value="week3.txt">Week 3</MenuItem>
-			</Select>
-			<Box>
-			  <Button onClick={startQuiz} variant="contained" color="primary">
-				Start
-			  </Button>
-			</Box>
-			</form>
+			 <form onSubmit={handleFileSubmit}>
+			 {checkboxOptions.map((option) => (
+			   <FormControlLabel
+				 key={option.value}
+				 control={
+				   <Checkbox
+					 checked={selectedCheckboxes.includes(option.value)}
+					 onChange={() => handleCheckboxChange(option.value)}
+				   />
+				 }
+				 label={option.label}
+			   />
+			 ))}
+			 <Box>
+			   <Button type="submit" variant="contained" color="primary">
+				 Start
+			   </Button>
+			 </Box>
+		   </form>		   
 		  ) : isConnected && !quizComplete ? (
 			<>
 			  <Box>
