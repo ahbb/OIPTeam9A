@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Container, Stack, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { Box, Button, Container, Stack, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem } from "@mui/material";
 import { Curio } from "../services/curioServices";
 import { DataType, PeerData } from "../services/types";
 import * as fs from 'fs';
@@ -27,6 +27,8 @@ export default function QuizController({ sendMessage }: Props) {
 	const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
 	const [answerCorrect, setAnswerCorrect] = useState<boolean | null>(null);
 	const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
+	const [selectedFilename, setSelectedFilename] = useState<string>('');
+
 
 	// Quiz progress state
 	const [questionCount, setQuestionCount] = useState(0);
@@ -81,13 +83,13 @@ export default function QuizController({ sendMessage }: Props) {
 		setQuizStarted(true);
 		// reset counts
 		setQuestionCount(0);
-		initQuestion();
+		initQuestion(selectedFilename);
 	  };
 
 
-	const initQuestion = async () => {
+	const initQuestion = async (filename : String) => {
 		try {
-			const response = await fetch('./questions.txt');
+			const response = await fetch(`./${filename}`);
 			const text = await response.text();
 			console.log("gretg - " + text)
 			const lines = text.split('\n');
@@ -95,7 +97,7 @@ export default function QuizController({ sendMessage }: Props) {
 			const data = randomLine.split('|');
 
 			const question = data[0];
-			const correctAnswer = data[1];
+			const correctAnswer = data[1];	
 			const wrongAnswers = data.slice(2);
 			const answers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
 
@@ -186,7 +188,7 @@ export default function QuizController({ sendMessage }: Props) {
 	};
 	  
 	useEffect(() => {
-		initQuestion();
+		initQuestion(selectedFilename);
 		const autoConnect = async () => {
 			try {
 				if (!isConnected) {
@@ -246,17 +248,17 @@ export default function QuizController({ sendMessage }: Props) {
 			moveForward();
 			setAnswerCorrect(true);
 			setQuestionCount((prevCount) => prevCount + 1); // increment question count
-			initQuestion();
+			initQuestion(selectedFilename);
 		} else if (selectedMoveOption === 'Turn Left') {
 			turnLeft();
 			setAnswerCorrect(true);
 			setQuestionCount((prevCount) => prevCount + 1); // increment question count
-			initQuestion();
+			initQuestion(selectedFilename);
 		} else if (selectedMoveOption === 'Turn Right') {
 			turnRight();
 			setAnswerCorrect(true);
 			setQuestionCount((prevCount) => prevCount + 1); // increment question count
-			initQuestion();
+			initQuestion(selectedFilename);
 		} 
 	
 		// Reset the selected option and hide the pop-up
@@ -264,16 +266,32 @@ export default function QuizController({ sendMessage }: Props) {
 		setShowPopup(false);
 	}, [selectedMoveOption]);
 
+	const handleFileSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		// Call initQuestion with the selected filename
+		initQuestion(selectedFilename);
+	};	  
 
 	return (
 		<Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
 		  {!quizStarted ? (
+			<form onSubmit={handleFileSubmit}>
+			<Select
+				label="Enter Filename" // Note: Select doesn't use "label" prop directly, you may need to adjust styling accordingly.
+				value={selectedFilename}
+				onChange={(e) => setSelectedFilename(e.target.value)}
+				style={{ width: "50%" }}
+				>
+				<MenuItem value="week1.txt">Week 1</MenuItem>
+				<MenuItem value="week2.txt">Week 2</MenuItem>
+				<MenuItem value="week3.txt">Week 3</MenuItem>
+			</Select>
 			<Box>
-
 			  <Button onClick={startQuiz} variant="contained" color="primary">
 				Start
 			  </Button>
 			</Box>
+			</form>
 		  ) : isConnected && !quizComplete ? (
 			<>
 			  <Box>

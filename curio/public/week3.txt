@@ -1,0 +1,46 @@
+What is the proper way to import numpy?|import numpy as np|import numpy|from numpy import numpy|import np
+How can you create a numpy array of size 5 filled with zeros?|np.zeros(5)|np.ones(5)|np.full(5,0)|np.zeros(5,0)
+How can you access the 4th element of a numpy array named 'arr'?|arr[3]|arr[4]|arr.get(3)|arr[4th]
+How can you modify the 2nd value of a numpy array named 'arr' to be 7?|arr[1] = 7|arr[2] = 7|arr.set(1,7)|arr[2nd] = 7
+How can you print all values in a numpy array named 'arr'?|print(arr)|print(arr.values())|print(arr.all())|print(arr.print())
+How to create a numpy array of size 4 filled with ones?|np.ones(4)|np.zeros(4)|np.full(4,1)|np.ones(4,1)
+What will be the output of np.full((2,2), 8)?|[[8, 8], [8, 8]]|[8, 8, 8, 8]|[[2,2], [8,8]]|[2,2,8,8]
+How to generate a numpy array of size 3 with random values?|np.random.rand(3)|np.random(3)|np.rand(3)|np.random.random(3)
+What will be the output of np.ones((2,3))?|[[1, 1, 1], [1, 1, 1]]|[[2, 3], [1, 1]]|[1, 1, 1, 1, 1, 1]|[[2,2,2], [3,3,3]]
+What will be the output of np.random.uniform(0,1,3)?|Three random floating numbers between 0 and 1.|[0,1,3]|Three random integer numbers between 0 and 1.|Three numbers: 0, 1 and 3.
+How to slice the numpy array 'arr' from index 1 to 3?|arr[1:4]|arr[1:3]|arr[1, 3]|arr[1;3]
+What will be the output of 'arr > 5' if 'arr' is a numpy array?|A boolean array where each element is True if the corresponding element in 'arr' is greater than 5, False otherwise.|[5]|True|False
+How to filter values larger than 10 in a numpy array 'arr'?|arr[arr > 10]|arr > 10|arr < 10|arr[arr < 10]
+How to rearrange elements in ascending order in a numpy array 'arr'?|np.sort(arr)|np.arrange(arr)|np.order(arr)|np.ascending(arr)
+What is the purpose of the np.random.uniform function?|To generate an array of specified shape with random floats in it, where each float is from a uniform distribution over a specified interval.|To generate a uniformly distributed integer.|To generate a uniform array of specified shape.|To generate a random integer.
+How can you add the element 9 at the end of a numpy array 'arr'?|np.append(arr, 9)|np.add(arr, 9)|np.concatenate(arr, 9)|arr.append(9)
+What will be the output of np.zeros((3,3))?|[[0, 0, 0], [0, 0, 0], [0, 0, 0]]|[0, 0, 0, 0, 0, 0, 0, 0, 0]|[[3, 3, 3], [0, 0, 0], [0, 0, 0]]|[[3,3,3], [3,3,3], [3,3,3]]
+How to generate an array of 5 random integers between 1 and 10 using numpy?|np.random.randint(1, 11, 5)|np.random.rand(1, 11, 5)|np.random.uniform(1, 11, 5)|np.randint(1, 11, 5)
+How to add all elements of a numpy array 'arr'?|np.sum(arr)|np.add(arr)|arr.add()|arr.sum()
+How to multiply all elements of a numpy array 'arr' by 3?|arr * 3|arr x 3|3 x arr|3 * arr
+What is the purpose of the np.zeros function?|To create a new array of given shape and type, filled with zeros.|To fill an existing array with zeros.|To create an array of zeros with the shape of the input array.|To create an array of zero dimensions.
+What will be the output of np.full((3,2), 7)?|[[7, 7], [7, 7], [7, 7]]|[7, 7, 7, 7, 7, 7]|[[3, 2], [7, 7]]|[3,2,7,7]
+How can you convert a Python list to a numpy array?|np.array(list)|np.as_array(list)|np.to_array(list)|np.convert_array(list)
+What will be the output of np.random.randint(2, size=10)?|An array of 10 random integers where each integer is either 0 or 1.|An array of 10 random integers where each integer is 2.|An array of 2 random integers.|An array of 10 random integers.
+What is the purpose of the np.ones function?|To create a new array of given shape and type, filled with ones.|To fill an existing array with ones.|To create an array of ones with the shape of the input array.|To create an array of one dimension.
+How to replace all elements of a numpy array 'arr' with 0?|arr[:] = 0|arr.replace(0)|np.zeros(arr)|arr = np.zeros(arr.shape)
+How to create a 2D array with 3 rows and 4 columns filled with random floats between 0 and 1 using numpy?|np.random.rand(3, 4)|np.random.randint(0, 1, (3, 4))|np.random.uniform(0, 1, (4, 3))|np.ones((3,4))
+What will be the output of 'arr < 5' if 'arr' is a numpy array?|A boolean array where each element is True if the corresponding element in 'arr' is less than 5, False otherwise.|[5]|True|False
+How to filter values less than 0 in a numpy array 'arr'?|arr[arr < 0]|arr < 0|arr > 0|arr[arr > 0]
+How to reverse the order of elements in a numpy array 'arr'?|arr[::-1]|np.reverse(arr)|arr.reverse()|np.flip(arr)
+How can you change the shape of a numpy array 'arr' to be (3,3)?|arr.reshape((3, 3))|arr.shape((3, 3))|arr.resize((3, 3))|np.shape(arr, (3, 3))
+How to create a numpy array of size 10 filled with the number 5?|np.full(10, 5)|np.ones(10, 5)|np.zeros(10, 5)|np.random.randint(5, size=10)
+What is the purpose of the np.random.rand function?|To create an array of the given shape and populate it with random samples from a uniform distribution over [0, 1).|To generate a random integer.|To create a random array of the given shape.|To generate a random float.
+What is the purpose of the np.random.randint function?|To return an array of specified shape filled with random integers from low (inclusive) to high (exclusive).|To return a random float.|To return an array of specified shape filled with random floats.|To generate a random integer.
+What will be the output of np.full((4,4), 3)?|[[3, 3, 3, 3], [3, 3, 3, 3], [3, 3, 3, 3], [3, 3, 3, 3]]|[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]|[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]|[[4,4,4,4], [3,3,3,3]]
+How to slice the numpy array 'arr' to get the last 3 elements?|arr[-3:]|arr[3:]|arr[:-3]|arr[:3]
+How to get the shape of a numpy array 'arr'?|arr.shape|np.shape(arr)|arr.get_shape()|arr.size
+How to calculate the mean of a numpy array 'arr'?|np.mean(arr)|arr.mean()|np.average(arr)|arr.median()
+What is the purpose of the np.random.uniform function?|To draw samples from a uniform distribution.|To generate a random integer.|To generate an array of random floats.|To create a uniform array of specified shape.
+What will be the output of np.ones((3,2))?|[[1, 1], [1, 1], [1, 1]]|[[3, 2], [1, 1]]|[1, 1, 1, 1, 1, 1]|[[3,2], [3,2]]
+How to get the sum of each column in a 2D numpy array 'arr'?|np.sum(arr, axis=0)|np.sum(arr, axis=1)|np.sum(arr, axis=2)|arr.sum(axis=0)
+What is the purpose of the np.full function?|To create a new array of given shape and type, filled with fill_value.|To create a full array of specified shape.|To fill an existing array with a specified value.|To generate a random array of specified shape.
+How to create a 2x2 identity matrix using numpy?|np.eye(2)|np.ones((2,2))|np.zeros((2,2))|np.random.rand(2,2)
+How to flatten a 2D numpy array 'arr'?|arr.flatten()|arr.flat()|np.flatten(arr)|np.flat(arr)
+What will be the output of 'arr == 5' if 'arr' is a numpy array?|A boolean array where each element is True if the corresponding element in 'arr' is 5, False otherwise.|[5]|True|False
+How to concatenate two numpy arrays 'arr1' and 'arr2'?|np.concatenate((arr1, arr2))|np.concat(arr1, arr2)|arr1.concat(arr2)|concat(arr1, arr2)

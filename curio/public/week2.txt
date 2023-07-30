@@ -1,0 +1,42 @@
+What is the result of the following expression in Python? 5 + 3 * 2?|11|16|13|10
+Which of the following is an example of a boolean type in Python?|True|5|"Hello"|3.14
+How do you access the last element of a Python list?|myList[-1]|myList[0]|myList[last]|myList[length-1]
+Which loop in Python is used to iterate over a sequence of elements with a known length?|for loop|while loop|do-while loop|until loop
+In Python, which keyword is used to implement conditional branching?|if|then|else|elif
+How do you define a function in Python?|def my_function():|define my_function():|function my_function():|define function my_function():
+What is the correct way to call a function named calculate_sum in Python?|calculate_sum()|call calculate_sum()|calculate_sum|calculate_sum[]
+What data structure does a dictionary in Python resemble?|Associative array|Linked list|Stack|Queue
+How do you add a new key-value pair to an existing dictionary in Python?|my_dict[new_key] = new_value|my_dict.append(new_key, new_value)|my_dict.add(new_key, new_value)|add new_key, new_value to my_dict
+How do you check if a value exists in a list in Python?|value in my_list|my_list.exists(value)|exists(value, my_list)|my_list.contains(value)
+Which Python function is used to get the length of a list?|len(my_list)|count(my_list)|size(my_list)|length(my_list)
+What is the purpose of the elif keyword in Python?|To indicate the end of a loop|To check an additional condition after an if statement|To define a new function|To initialize a variable
+How do you access the value associated with a specific key in a dictionary?|my_dict[key]|my_dict.get(key)|my_dict.value(key)|my_dict.retrieve(key)
+In Python, what does the return statement do inside a function?|It terminates the function and returns a value to the caller.|It restarts the function from the beginning.|It executes a loop within the function.|It prints the output of the function.
+How do you remove a key-value pair from a dictionary in Python?|del my_dict[key]|remove(my_dict, key)|my_dict.delete(key)|my_dict.remove(key)
+Which of the following is a numeric data type in Python?|int|string|list|boolean
+How do you check if two variables, x and y, refer to the same object in memory?|x is y|x == y|x and y|x not y
+In Python, which keyword is used to define a block of code?|def|block|function|pass
+What is the purpose of the pass statement in Python?|It is a placeholder for future code.|It breaks out of a loop.|It skips the current iteration in a loop.|It returns a value from a function.
+How do you check if a key exists in a dictionary?|key in my_dict|my_dict.exists(key)|my_dict.key_exists(key)|key.exists(my_dict)
+How do you define a list in Python?|my_list = [1, 2, 3]|my_list = {1, 2, 3}|my_list = "1, 2, 3"|my_list = (1, 2, 3)
+What is the result of the following expression in Python? 12 / 3 + 2 * 4|24|16|10.0|8
+Which loop in Python is used to execute a block of code as long as a condition is true?|while loop|for loop|do-while loop|until loop
+What is the correct way to access the value associated with a key in a dictionary?|my_dict[key]|my_dict.get(key)|my_dict.value(key)|my_dict.get_value(key)
+In Python, what is the purpose of the else clause in a try-except block?|It is executed when an exception occurs.|It is executed when there is no exception.|It specifies the type of exception to catch.|It terminates the program.
+What does the range() function in Python do?|It generates a sequence of numbers.|It returns the length of a list.|It creates a dictionary.|It checks for a key in a dictionary.
+How do you define a function with parameters in Python?|def my_function(param1, param2):|function my_function(param1, param2):|define my_function(param1, param2):|my_function(param1, param2):
+In Python, what does the continue statement do?|It skips the current iteration of a loop.|It terminates the loop.|It returns a value from a function.|It breaks out of the loop.
+How do you check if a variable is of a specific data type in Python?|isinstance(variable, data_type)|variable.type() == data_type|variable.typeof(data_type)|data_type in variable
+How do you concatenate two dictionaries in Python?|my_dict1.update(my_dict2)|my_dict1 + my_dict2|my_dict1.merge(my_dict2)|my_dict1.extend(my_dict2)
+In Python, which function is used to convert a string to an integer?|int()|str()|convert_to_int()|integer()
+What is the purpose of the pass statement in Python?|It is a placeholder for future code.|It breaks out of a loop.|It skips the current iteration in a loop.|It returns a value from a function.
+How do you execute a block of code multiple times as long as a condition is true in Python?|while loop|for loop|if statement|do-while loop
+What is the result of the following expression in Python? 5 % 2|1|2|2.5|0
+In Python, which keyword is used to define a block of code to be executed repeatedly?|while|for|loop|repeat
+What is the purpose of the elif keyword in Python conditional statements?|It is a short form of "else if."|It represents a loop condition.|It specifies an error condition.|It terminates a loop.
+Which of the following is a valid way to create an empty dictionary in Python?|my_dict = {}|my_dict = dict()|my_dict = {None}|my_dict = set()
+What is the correct way to check if a given string variable, my_string, is empty in Python?|if not my_string:|if my_string is empty:|if my_string == "":|if my_string == None:
+How do you add an element to the end of a Python list?|my_list.append(element)|my_list.add(element)|my_list.insert(element)|my_list.extend(element)
+How do you find the maximum value from a Python list named my_list?|max(my_list)|my_list.maximum()|my_list.max_value()|my_list.find_max()
+In Python, what does the break statement do?|It exits the entire loop immediately.|It skips the current iteration of a loop and continues with the next iteration.|It continues executing the loop until a specified condition is met.|It terminates the current loop and resumes the next iteration.
+
