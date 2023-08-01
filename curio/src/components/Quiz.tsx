@@ -125,7 +125,7 @@ export default function QuizController({ sendMessage }: Props) {
 		const question = data[0];
 		const correctAnswer = data[1];
 		const wrongAnswers = data.slice(2);
-		const answers = [correctAnswer, ...wrongAnswers].sort(() => rng() - 0.5); // Shuffle the answers using the same random number generator
+		const answers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5); // Shuffle the answers using the same random number generator
 	
 		setQuestion(question);
 		setCorrectAnswer(correctAnswer);
@@ -354,7 +354,7 @@ export default function QuizController({ sendMessage }: Props) {
 			   </Button>
 			 </Box>
 		   </form>		   
-		  ) : isConnected && !quizComplete ? (
+		  ) : isConnected || !quizComplete ? (
 			<>
 			  <Box>
 				{questionCount + 1}. {question}

@@ -38,10 +38,3 @@ What is the binary equivalent of the decimal number 13?|1101|1011|1001|1110
 A full adder circuit takes in _____ inputs to perform the addition of two binary numbers.|3|2|1|4
 What does the acronym "CPU" stand for in the context of computing?|Central Processing Unit|Central Power Unit|Central Programming Unit|Central Parallel Unit
 Which type of logic circuit output depends on both the current inputs and its previous state?|Sequential logic circuit|Combinational logic circuit|Arithmetic logic circuit|Binary logic circuit
-
-
-
-
-
-
-
