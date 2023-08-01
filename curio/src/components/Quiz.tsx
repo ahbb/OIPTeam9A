@@ -1,9 +1,11 @@
+import seedrandom from 'seedrandom';
 import { useEffect, useState } from "react";
 import { Box, Button, Container, Stack, Dialog, DialogTitle, DialogContent, Checkbox, FormControlLabel } from "@mui/material";
 import { Curio } from "../services/curioServices";
 import { DataType, PeerData } from "../services/types";
 import * as fs from 'fs';
 import { TextField } from "@mui/material";
+
 
 type Props = {
 	sendMessage: ((message: PeerData) => void) | undefined;
@@ -16,7 +18,8 @@ export default function QuizController({ sendMessage }: Props) {
 	const [numCheckpoints, setNumCheckpoints] = useState<number | null>(null);
 	const [checkpointsComplete, setCheckpointsComplete] = useState(0);
 	const [quizStarted, setQuizStarted] = useState(false);
-
+	// Initialize a state variable to keep track of the index of the current question
+	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
 	// Multiple-choice question state
 	const [question, setQuestion] = useState<string | null>(null);
@@ -29,7 +32,8 @@ export default function QuizController({ sendMessage }: Props) {
 	const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
 	const [selectedFilename, setSelectedFilename] = useState<string>('');
 	const [selectedCheckboxes, setSelectedCheckboxes] = useState<string[]>([]);
-
+	// Initialize a state variable to keep track of the index of the current question
+	
 	const checkboxOptions = [
 		{ label: "Week 1", value: "week1.txt" },
 		{ label: "Week 2", value: "week2.txt" },
@@ -83,55 +87,86 @@ export default function QuizController({ sendMessage }: Props) {
 		setQuizComplete(true);
 		}
 	}, [checkpointsComplete, numCheckpoints, pointsToWin]);
+
+	useEffect(() => {
+		if (randomSeed) {
+		  initQuestion(randomSeed);
+		}
+	  }, []);
 	
 	// Function to start the quiz
 	const startQuiz = () => {
 		setQuizStarted(true);
 		// reset counts
 		setQuestionCount(0);
-		initQuestion();
+		initQuestion(randomSeed);
 	  };
 
 
-	  const initQuestion = async () => {
-		try {
-		  // Combine selected text files
-		  let combinedText = '';
-		  for (const filename of selectedCheckboxes) {
-			const response = await fetch(`./${filename}`);
-			const text = await response.text();
-			combinedText += text + '\n';
-		  }
-	  
-		  const lines = combinedText.split('\n');
-		  const randomLine = lines[Math.floor(Math.random() * lines.length)];
-		  const data = randomLine.split('|');
-	  
-		  const question = data[0];
-		  const correctAnswer = data[1];
-		  const wrongAnswers = data.slice(2);
-		  const answers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
-	  
-		  setQuestion(question);
-		  setCorrectAnswer(correctAnswer);
-		  setAnswers(answers);
-		} catch (err) {
-		  console.error('Failed to fetch questions', err);
+
+
+	const initQuestion = async (seed: string) => {
+	try {
+		// Combine selected text files
+		let combinedText = '';
+		for (const filename of selectedCheckboxes) {
+		const response = await fetch(`./${filename}`);
+		const text = await response.text();
+		combinedText += text + '\n';
 		}
-	  };
+	
+		const lines = combinedText.split('\n');
+		const rng = seedrandom(seed); // Create a random number generator with the provided seed
+		const shuffledLines = lines.sort(() => rng() - 0.5); // Shuffle the lines using the random number generator
+	
+		const data = shuffledLines[currentQuestionIndex].split('|');
+	
+		const question = data[0];
+		const correctAnswer = data[1];
+		const wrongAnswers = data.slice(2);
+		const answers = [correctAnswer, ...wrongAnswers].sort(() => rng() - 0.5); // Shuffle the answers using the same random number generator
+	
+		setQuestion(question);
+		setCorrectAnswer(correctAnswer);
+		setAnswers(answers);
+	} catch (err) {
+		console.error('Failed to fetch questions', err);
+	}
+	};
+
 	  
 
 	const handleAnswerSelect = async (answer: string) => {
-		setSelectedAnswer(answer);
-		if (answer === correctAnswer) {
-			setShowPopup(true);
-		} else {
-			setAnswerCorrect(false);
-			setButtonsDisabled(true); // Disable buttons when the answer is wrong
-			moveBackwards();
-		}
+	setSelectedAnswer(answer);
+	if (answer === correctAnswer) {
+		setShowPopup(true);
+	} else {
+		setAnswerCorrect(false);
+		setButtonsDisabled(true); // Disable buttons when the answer is wrong
+		moveBackwards();
+	}
+	
+	// Increment the question index after the user selects an answer
+	setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
 	};
 	
+	// Add a state variable to hold the user-requested seed
+	const [randomSeed, setRandomSeed] = useState('');
+
+	const handleFileSubmit = (e: React.FormEvent) => {
+	e.preventDefault();
+	if (selectedCheckboxes.length > 0) {
+		// Start the quiz with the concatenated text files and the user-requested seed
+		setQuizStarted(true);
+		// Reset counts
+		setQuestionCount(0);
+		initQuestion(randomSeed);
+	} else {
+		// Display an error message or take appropriate action if no checkboxes are selected
+	}
+	};
+
+
 	const handleConnect = () => {
 		if (sendMessage) {
 			const connectData: PeerData = {
@@ -199,7 +234,7 @@ export default function QuizController({ sendMessage }: Props) {
 	};
 	  
 	useEffect(() => {
-		initQuestion();
+		initQuestion(randomSeed);
 		const autoConnect = async () => {
 			try {
 				if (!isConnected) {
@@ -259,17 +294,17 @@ export default function QuizController({ sendMessage }: Props) {
 			moveForward();
 			setAnswerCorrect(true);
 			setQuestionCount((prevCount) => prevCount + 1); // increment question count
-			initQuestion();
+			initQuestion(randomSeed);
 		} else if (selectedMoveOption === 'Turn Left') {
 			turnLeft();
 			setAnswerCorrect(true);
 			setQuestionCount((prevCount) => prevCount + 1); // increment question count
-			initQuestion();
+			initQuestion(randomSeed);
 		} else if (selectedMoveOption === 'Turn Right') {
 			turnRight();
 			setAnswerCorrect(true);
 			setQuestionCount((prevCount) => prevCount + 1); // increment question count
-			initQuestion();
+			initQuestion(randomSeed);
 		} 
 	
 		// Reset the selected option and hide the pop-up
@@ -277,18 +312,6 @@ export default function QuizController({ sendMessage }: Props) {
 		setShowPopup(false);
 	}, [selectedMoveOption]);
 
-	const handleFileSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		if (selectedCheckboxes.length > 0) {
-		  // Start the quiz with the concatenated text files
-		  setQuizStarted(true);
-		  // Reset counts
-		  setQuestionCount(0);
-		  initQuestion();
-		} else {
-		  // Display an error message or take appropriate action if no checkboxes are selected
-		}
-	  };
 		
 
 	const handleCheckboxChange = (value: string) => {
@@ -316,7 +339,14 @@ export default function QuizController({ sendMessage }: Props) {
 				 }
 				 label={option.label}
 			   />
+			   
 			 ))}
+				<TextField
+				label="Enter Random Seed"
+				variant="outlined"
+				value={randomSeed}
+				onChange={(e) => setRandomSeed(e.target.value)}
+				/>
 			 <Box>
 			   <Button type="submit" variant="contained" color="primary">
 				 Start
