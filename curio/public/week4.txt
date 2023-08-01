@@ -1,0 +1,20 @@
+What does HCI stand for?|Human-Computer Interaction|Highly Connected Individuals|Hyperactive Computing Interfaces|Hybrid Control Instruments
+Which of the following is the primary goal of HCI?|Designing user-friendly interfaces|Maximizing computer processing power|Minimizing software development time|Enhancing network security
+Which design principle emphasizes the visibility of system status and feedback to the user?|Affordance|Consistency|Feedback|Fitts's Law
+What is the term used to describe the ease of learning and using an interface for the first time?|Usability|Interactivity|Flexibility|Responsiveness
+Which HCI usability evaluation method involves observing users performing tasks in a controlled environment?|User testing|Surveys|Heuristic evaluation|Focus groups
+What is the input device commonly used in HCI for pointing and selecting objects on the screen?|Mouse|Keyboard|Joystick|Head-mounted display
+Which interaction style involves the use of physical movements, gestures, and postures to interact with the computer?|Natural User Interface (NUI)|Graphical User Interface (GUI)|Command-Line Interface (CLI)|Menu-Driven Interface (MDI)
+The process of HCI design that involves understanding user needs, behaviors, and preferences is called:|User research|Interface prototyping|Usability testing|Interaction modeling
+Which HCI principle states that frequently used actions should be easily and quickly accessible?|Hick's Law|Miller's Law|Fitts's Law|Zeigarnik Effect
+Which type of accessibility support aims to assist users with visual impairments?|Screen readers|Text-to-speech conversion|Haptic feedback|Augmented reality
+What ethical concern does the responsible handling of personal data address?|Data breaches|Speed optimization|Hardware compatibility|Software updates
+Which of the following is an example of an ethical issue related to artificial intelligence (AI)?|Algorithmic bias|Efficient code implementation|Algorithm complexity|Feature selection
+What is the primary ethical concern related to cybersecurity?|Handling data breaches|Reducing software bugs|Ensuring user convenience|Increasing network speed
+Which ethical aspect is associated with the responsible development of intellectual property?|Copyright compliance|Algorithm efficiency|Code optimization|Hardware performance
+What ethical issue is associated with bias in algorithms?|Algorithm fairness|Data storage capacity|Energy consumption|Software compatibility
+Why is the accountability of AI systems an important ethical consideration?|To ensure unbiased decision-making|To avoid financial losses|To shift responsibility to users|To increase processing speed
+What ethical dilemma is associated with dual-use technology?|Potential benefits and risks|Hardware advancements|Software development|Cybersecurity challenges
+What ethical concern arises from the environmental impact of technology?|Energy consumption|Code readability|Algorithm efficiency|Data storage capacity
+Which ethical issue is related to the responsible development of human enhancement technologies?|Addressing potential risks|Increasing memory capacity|Ensuring user comfort|Enhancing hardware performance
+What ethical consideration should computer scientists address to bridge the digital divide?|Ensuring equitable access to technology|Optimizing code execution time|Minimizing software bugs|Enhancing data storage capacity

@@ -38,6 +38,7 @@ export default function QuizController({ sendMessage }: Props) {
 		{ label: "Week 1", value: "week1.txt" },
 		{ label: "Week 2", value: "week2.txt" },
 		{ label: "Week 3", value: "week3.txt" },
+		{ label: "Week 4", value: "week4.txt" },
 	  ];
 
 	// Quiz progress state

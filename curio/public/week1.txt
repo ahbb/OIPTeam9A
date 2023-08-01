@@ -1,12 +1,12 @@
 What is Boolean algebra?|A branch of mathematics dealing with variables having two possible values|A branch of mathematics dealing with complex numbers|A branch of geometry studying shapes and figures|A branch of calculus studying rates of change
 Which are the basic operations in Boolean algebra?|AND, OR, NOT|ADD, SUBTRACT, MULTIPLY|DIVIDE, MULTIPLY, EXPONENTIATE|MERGE, SPLIT, DELETE
 What is the result of the AND operation (A ∧ B) in Boolean algebra when A = 1 and B = 0?|0|1|2|Undefined
-How is the OR operation represented in Boolean algebra?|∨|+|^|~|
+How is the OR operation represented in Boolean algebra?|∨|+|^|~
 What is the truth table output for the NOT operation when the input is 0?|1|0|2|Undefined
 Which property in Boolean algebra states that A AND 1 is equal to A?|Identity property|Associative property|Complement property|Distributive property
-What is the complement property in Boolean algebra?|A OR NOT A = 1|A AND NOT A = 0|A AND 1 = A|A OR 0 = A|Answer: A OR NOT A = 1
+What is the complement property in Boolean algebra?|A OR NOT A = 1|A AND NOT A = 0|A AND 1 = A|A OR 0 = A
 How can Boolean expressions be simplified?|By adding more variables|By applying Boolean laws and theorems|By using only the AND operation|By using the XOR operation
-A Boolean expression without any NOT operations is in:|Canonical form|Complement form|Expanded form|Simplified form|Answer: Canonical form
+A Boolean expression without any NOT operations is in:|Canonical form|Complement form|Expanded form|Simplified form
 In which field of study is Boolean algebra extensively used?|Digital circuit design|Astronomy|Botany|Psychology
 In boolean algebra, what values are used to represent TRUE and FALSE, respectively?|1 and 0|0 and 1|TRUE and FALSE|10 and 1000
 What kind of circuits typically operate with only TRUE (1) and FALSE (0) states?|Digital circuits|Analog circuits|Parallel circuits|Series circuits
@@ -16,14 +16,14 @@ What does the statement "1+2=3" signify in the context of boolean algebra and ci
 Which of the following represents a binary number in the decimal system as "10"?|2|3|4|5
 What data type would you use to store the sentence "Hello, this is a program" in a programming language?|String|Integer|Float|Boolean
 How are numbers and characters typically represented in programming languages using boolean algebra and circuits?|As binary values|As TRUE (1) and FALSE (0)|As decimal values|As fractions
-What is the result of the binary AND operation between 1101 and 0111?|1001|1100|1111|0001
-What do we use boolean algebra and circuits for in real-world programming?|Handling only TRUE/FALSE conditions|Working with logical operations and control flow in programs|Representing numbers greater than 1,000|Performing complex mathematical calculations
+What is the result of the binary AND operation between 1101 and 0111?|0101|1100|1111|0001
+What do we use boolean algebra and circuits for in real-world programming?|Working with logical operations and control flow in programs|Representing numbers greater than 1,000|Performing complex mathematical calculations|Realising creativity
 What is the result of adding the binary numbers 1101 and 1010?|10111|11001|11111|10011
 What is the binary equivalent of the decimal number 42?|101010|101011|110100|110101
 What is the result of subtracting the binary number 10101 from 11100?|1001|1101|1000|1110
 How do you represent the decimal number 25 in 8-bit binary?|11001|10011|11100|10101
 What is the binary result of performing the bitwise AND operation on 101010 and 110011?|100010|111011|100011|110010
-How do you represent the decimal number 13 in 6-bit unsigned binary?|011011|100101|001101|010011
+How do you represent the decimal number 13 in 6-bit unsigned binary?|001101|011011|100101|010011
 What is the binary equivalent of the hexadecimal number 3F?|111111|111110|110011|101111
 What is the result of multiplying the binary numbers 101 and 10?|1010|1000|1100|1110
 How do you represent the decimal number -6 in 8-bit two's complement binary?|11111010|11111011|11110110|11110111
@@ -38,7 +38,6 @@ What is the binary equivalent of the decimal number 13?|1101|1011|1001|1110
 A full adder circuit takes in _____ inputs to perform the addition of two binary numbers.|3|2|1|4
 What does the acronym "CPU" stand for in the context of computing?|Central Processing Unit|Central Power Unit|Central Programming Unit|Central Parallel Unit
 Which type of logic circuit output depends on both the current inputs and its previous state?|Sequential logic circuit|Combinational logic circuit|Arithmetic logic circuit|Binary logic circuit
-
 
 
 
