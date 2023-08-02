@@ -5,7 +5,10 @@ import { Curio } from "../services/curioServices";
 import { DataType, PeerData } from "../services/types";
 import * as fs from 'fs';
 import { TextField } from "@mui/material";
-import quizSoundtrack from './bg.mp3'
+import quizSoundtrack from './bg2.mp3'
+import correctSound from './correct.m4a';
+import wrongSound from './wrong.m4a';
+
 
 type Props = {
 	sendMessage: ((message: PeerData) => void) | undefined;
@@ -13,6 +16,8 @@ type Props = {
 
 export default function QuizController({ sendMessage }: Props) {
 	const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+	const [correctSoundElement, setCorrectSoundElement] = useState<HTMLAudioElement | null>(null);
+	const [wrongSoundElement, setWrongSoundElement] = useState<HTMLAudioElement | null>(null);
 	const [isConnected, setIsConnected] = useState<boolean>(false);
 	const [isMoving, setIsMoving] = useState<boolean>(false);
 	const [isMovingForward, setIsMovingForward] = useState<boolean>(false);
@@ -139,17 +144,34 @@ export default function QuizController({ sendMessage }: Props) {
 	  
 
 	const handleAnswerSelect = async (answer: string) => {
-	setSelectedAnswer(answer);
-	if (answer === correctAnswer) {
-		setShowPopup(true);
-	} else {
-		setAnswerCorrect(false);
-		setButtonsDisabled(true); // Disable buttons when the answer is wrong
-		moveBackwards();
-	}
-	
-	// Increment the question index after the user selects an answer
-	setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+		setSelectedAnswer(answer);
+		if (answer === correctAnswer) {
+		  setAnswerCorrect(true);
+		  setShowPopup(true);
+	  
+		  if (correctSoundElement) {
+			if (!correctSoundElement.paused) {
+			  correctSoundElement.pause();
+			  correctSoundElement.currentTime = 0;
+			}
+			correctSoundElement.play();
+		  }
+		} else {
+		  setAnswerCorrect(false);
+		  setButtonsDisabled(true); // Disable buttons when the answer is wrong
+		  moveBackwards();
+	  
+		  if (wrongSoundElement) {
+			if (!wrongSoundElement.paused) {
+			  wrongSoundElement.pause();
+			  wrongSoundElement.currentTime = 0;
+			}
+			wrongSoundElement.play();
+		  }
+		}
+	  
+		// Increment the question index after the user selects an answer
+		setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
 	};
 	
 	// Add a state variable to hold the user-requested seed
@@ -266,7 +288,32 @@ export default function QuizController({ sendMessage }: Props) {
 	}
 	}, [quizStarted, audioElement]);
 			
+	useEffect(() => {
+		// Create audio elements for the correct and wrong sounds
+		const correctAudio = new Audio();
+		correctAudio.src = correctSound;
+		correctAudio.load();
 	  
+		const wrongAudio = new Audio();
+		wrongAudio.src = wrongSound;
+		wrongAudio.load();
+	  
+		// Set the state variables to the created audio elements
+		setCorrectSoundElement(correctAudio);
+		setWrongSoundElement(wrongAudio);
+	  
+		return () => {
+		  // Clean up the audio elements when the component unmounts
+		  correctAudio.pause();
+		  correctAudio.currentTime = 0;
+	  
+		  wrongAudio.pause();
+		  wrongAudio.currentTime = 0;
+		};
+	  }, []);
+	  
+	
+
 	useEffect(() => {
 		initQuestion(randomSeed);
 		const autoConnect = async () => {
