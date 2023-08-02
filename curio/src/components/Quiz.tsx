@@ -5,13 +5,14 @@ import { Curio } from "../services/curioServices";
 import { DataType, PeerData } from "../services/types";
 import * as fs from 'fs';
 import { TextField } from "@mui/material";
-
+import quizSoundtrack from './bg.mp3'
 
 type Props = {
 	sendMessage: ((message: PeerData) => void) | undefined;
 };
 
 export default function QuizController({ sendMessage }: Props) {
+	const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
 	const [isConnected, setIsConnected] = useState<boolean>(false);
 	const [isMoving, setIsMoving] = useState<boolean>(false);
 	const [isMovingForward, setIsMovingForward] = useState<boolean>(false);
@@ -233,6 +234,38 @@ export default function QuizController({ sendMessage }: Props) {
 		}
 		setIsMoving(false);
 	};
+
+	useEffect(() => {
+		// Create an audio element
+		const audio = new Audio();
+	  
+		// Set the source of the audio element to the path of the soundtrack
+		audio.src = quizSoundtrack;
+	  
+		// Set the state variable to the created audio element
+		setAudioElement(audio);
+	  
+		// Load the soundtrack (This is asynchronous, and the soundtrack will start playing automatically once it's loaded)
+		audio.load();
+	  
+		// Optionally, you can set any additional audio properties here, such as looping, volume, etc.
+		// For example, to loop the soundtrack:
+		audio.loop = true;
+	  
+		// Clean up the audio element when the component unmounts
+		return () => {
+		  audio.pause();
+		  audio.currentTime = 0;
+		};
+	  }, []);
+
+	useEffect(() => {
+	if (quizStarted && audioElement) {
+		// Start playing the soundtrack once the quiz starts
+		audioElement.play();
+	}
+	}, [quizStarted, audioElement]);
+			
 	  
 	useEffect(() => {
 		initQuestion(randomSeed);
@@ -312,8 +345,6 @@ export default function QuizController({ sendMessage }: Props) {
 		setSelectedMoveOption('');
 		setShowPopup(false);
 	}, [selectedMoveOption]);
-
-		
 
 	const handleCheckboxChange = (value: string) => {
 		setSelectedCheckboxes((prevSelected) => {
